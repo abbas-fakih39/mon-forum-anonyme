@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Forum - Ecrire</title>
+</head>
+<body>
+  <h1>Ecrire un message</h1>
+  <input id="pseudo" type="text" placeholder="Ton pseudonyme" />
+  <br><br>
+  <textarea id="content" rows="5" placeholder="Ton message..."></textarea>
+  <br><br>
+  <button onclick="sendMessage()">Envoyer</button>
+  <p id="msg"></p>
+  <a href="http://localhost:80">Voir les messages</a>
+  <script>
+    async function sendMessage() {
+      const pseudo = document.getElementById('pseudo').value.trim();
+      const content = document.getElementById('content').value.trim();
+      if (!pseudo || !content) {
+        document.getElementById('msg').textContent = 'Remplis tous les champs !';
+        return;
+      }
+      try {
+        const res = await fetch('http://localhost:3000/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pseudo, content })
+        });
+        if (res.ok) {
+          document.getElementById('msg').textContent = 'Message envoye !';
+          document.getElementById('pseudo').value = '';
+          document.getElementById('content').value = '';
+        }
+      } catch(e) {
+        document.getElementById('msg').textContent = 'Erreur de connexion.';
+      }
+    }
+  </script>
+</body>
+</html>
