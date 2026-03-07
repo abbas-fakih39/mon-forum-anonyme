@@ -1,0 +1,55 @@
+version: '3.8'
+
+networks:
+  db-network:
+    driver: bridge
+  internal:
+    driver: bridge
+
+volumes:
+  db-data:
+
+services:
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: forum
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: forum_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - db-network
+
+  api:
+    build: ./api
+    environment:
+      DB_HOST: db
+      DB_USER: forum
+      DB_PASSWORD: secret
+      DB_NAME: forum_db
+    depends_on:
+      - db
+    networks:
+      - db-network
+      - internal
+
+  thread:
+    build: ./thread
+    ports:
+      - "80:80"
+    networks:
+      - internal
+    depends_on:
+      - api
+
+  sender:
+    build: ./sender
+    ports:
+      - "8080:8080"
+    networks:
+      - internal
+    depends_on:
+      - api
+
