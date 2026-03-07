@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Forum - Messages</title>
+</head>
+<body>
+  <h1>Forum Anonyme</h1>
+  <a href="http://localhost:8080">Ecrire un message</a>
+  <div id="messages"></div>
+  <script>
+    async function loadMessages() {
+      const res = await fetch('http://localhost:3000/messages');
+      const messages = await res.json();
+      document.getElementById('messages').innerHTML = messages.map(m => `
+        <div>
+          <strong>${m.pseudo}</strong> - ${new Date(m.created_at).toLocaleString('fr-FR')}
+          <p>${m.content}</p>
+          <hr>
+        </div>
+      `).join('');
+    }
+    loadMessages();
+    setInterval(loadMessages, 5000);
+  </script>
+</body>
+</html>
