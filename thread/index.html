@@ -10,7 +10,7 @@
   <div id="messages"></div>
   <script>
     async function loadMessages() {
-      const res = await fetch('http://localhost:3000/messages');
+      const res = await fetch('/api/messages');
       const messages = await res.json();
       document.getElementById('messages').innerHTML = messages.map(m => `
         <div>

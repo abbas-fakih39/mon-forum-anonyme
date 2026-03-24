@@ -22,7 +22,7 @@
         return;
       }
       try {
-        const res = await fetch('http://localhost:3000/messages', {
+        const res = await fetch('/api/messages', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ pseudo, content })
@@ -31,6 +31,9 @@
           document.getElementById('msg').textContent = 'Message envoye !';
           document.getElementById('pseudo').value = '';
           document.getElementById('content').value = '';
+        } else {
+          const err = await res.json();
+          document.getElementById('msg').textContent = err.error || 'Erreur.';
         }
       } catch(e) {
         document.getElementById('msg').textContent = 'Erreur de connexion.';
